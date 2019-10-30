@@ -68,7 +68,6 @@ RUN set -xe && \
 
 
 ENV RUBY_VERSIONS \
-      2.6.0 \
       2.5.0 \
       2.4.0 \
       2.3.3 
