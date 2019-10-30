@@ -1,13 +1,14 @@
 FROM judge0/buildpack-deps:jessie-2017-03-21
 
-RUN apt-get update && apt-get upgrade -y
+RUN apt-get update && apt-get upgrade -y && apt-get install libmpc-dev
 
 ENV GCC_VERSIONS \
        7.2.0 \
        6.4.0 \
        6.3.0 \
        5.4.0 \
-       4.9.4 
+       4.9.4 \
+       4.8.5
 RUN set -xe && \
     for GCC_VERSION in $GCC_VERSIONS; do \
       curl -fSsL "http://ftpmirror.gnu.org/gcc/gcc-$GCC_VERSION/gcc-$GCC_VERSION.tar.gz" -o /tmp/gcc-$GCC_VERSION.tar.gz; \
