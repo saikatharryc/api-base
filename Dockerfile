@@ -3,12 +3,7 @@ FROM judge0/buildpack-deps:jessie-2017-03-21
 RUN apt-get update && apt-get upgrade -y && apt-get install libmpc-dev -y
 
 ENV GCC_VERSIONS \
-       7.2.0 \
-       6.4.0 \
-       6.3.0 \
-       5.4.0 \
-       4.9.4 \
-       4.8.5
+       7.2.0 
 RUN set -xe && \
     for GCC_VERSION in $GCC_VERSIONS; do \
       curl -fSsL "http://ftpmirror.gnu.org/gcc/gcc-$GCC_VERSION/gcc-$GCC_VERSION.tar.gz" -o /tmp/gcc-$GCC_VERSION.tar.gz; \
@@ -76,8 +71,7 @@ ENV RUBY_VERSIONS \
       2.6.0 \
       2.5.0 \
       2.4.0 \
-      2.3.3 \
-      2.2.6 
+      2.3.3 
 RUN set -xe && \
     for RUBY_VERSION in $RUBY_VERSIONS; do \
       curl -fSsL "https://cache.ruby-lang.org/pub/ruby/ruby-$RUBY_VERSION.tar.gz" -o /tmp/ruby-$RUBY_VERSION.tar.gz; \
