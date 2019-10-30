@@ -78,8 +78,7 @@ ENV RUBY_VERSIONS \
       2.5.0 \
       2.4.0 \
       2.3.3 \
-      2.2.6 \
-      2.1.9
+      2.2.6 
 RUN set -xe && \
     for RUBY_VERSION in $RUBY_VERSIONS; do \
       curl -fSsL "https://cache.ruby-lang.org/pub/ruby/ruby-$RUBY_VERSION.tar.gz" -o /tmp/ruby-$RUBY_VERSION.tar.gz; \
