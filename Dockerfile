@@ -1,6 +1,6 @@
 FROM judge0/buildpack-deps:jessie-2017-03-21
 
-RUN apt-get update && apt-get upgrade -y && apt-get install libmpc-dev
+RUN apt-get update && apt-get upgrade -y && apt-get install libmpc-dev -y
 
 ENV GCC_VERSIONS \
        7.2.0 \
