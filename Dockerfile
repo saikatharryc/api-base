@@ -18,7 +18,6 @@ RUN set -xe && \
       tar -xf /tmp/gcc-$GCC_VERSION.tar.gz -C /tmp/gcc-$GCC_VERSION --strip-components=1 && \
       rm /tmp/gcc-$GCC_VERSION.tar.gz && \
       cd /tmp/gcc-$GCC_VERSION && \
-      ./contrib/download_prerequisites && \
       { rm *.tar.* || true; } && \
       tmpdir="$(mktemp -d)" && \
       cd "$tmpdir" && \
