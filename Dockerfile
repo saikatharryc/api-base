@@ -7,8 +7,7 @@ ENV GCC_VERSIONS \
        6.4.0 \
        6.3.0 \
        5.4.0 \
-       4.9.4 \
-       4.8.5
+       4.9.4 
 RUN set -xe && \
     for GCC_VERSION in $GCC_VERSIONS; do \
       curl -fSsL "http://ftpmirror.gnu.org/gcc/gcc-$GCC_VERSION/gcc-$GCC_VERSION.tar.gz" -o /tmp/gcc-$GCC_VERSION.tar.gz; \
