@@ -9,7 +9,7 @@ RUN set -xe && \
     JAVA_7_DEBIAN_VERSION=7u151-2.6.11-1~deb8u1 && \
     CA_CERTIFICATES_JAVA_VERSION=20161107~bpo8+1 && \
     echo 'deb http://archive.debian.org/debian jessie-backports main' > /etc/apt/sources.list.d/jessie-backports.list && \
-    apt-get Acquire::Check-Valid-Until=false update && apt-get install -y \
+    apt-get update && apt-get install -y \
       openjdk-8-jdk="$JAVA_8_DEBIAN_VERSION" \
       openjdk-7-jdk="$JAVA_7_DEBIAN_VERSION" \
       ca-certificates-java="$CA_CERTIFICATES_JAVA_VERSION" && \
