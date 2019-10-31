@@ -1,7 +1,8 @@
 FROM judge0/buildpack-deps:jessie-2017-03-21
 
-RUN add-apt-repository ppa:openjdk-r/ppa
-RUN apt-get update && apt-get upgrade -y && apt-get install libmpc-dev -y 
+RUN apt-get update && apt-get upgrade -y && apt-get install software-properties-common libmpc-dev -y 
+RUN add-apt-repository ppa:openjdk-r/ppa && apt-get update
+
 # see https://bugs.debian.org/775775
 # and https://github.com/docker-library/java/issues/19#issuecomment-70546872
 # RUN set -xe && \
