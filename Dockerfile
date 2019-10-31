@@ -19,21 +19,17 @@ RUN apt-get update && apt-get upgrade -y && apt-get install libmpc-dev -y
 # Install OpenJDK-8
 RUN apt-get install -y openjdk-8-jdk && \
     apt-get install -y ant && \
-    apt-get clean;
-
-# Fix certificate issues
-RUN apt-get install ca-certificates-java && \
+    apt-get install ca-certificates-java && \
     apt-get clean && \
+    update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java && \
+    update-alternatives --set javac /usr/lib/jvm/java-8-openjdk-amd64/bin/javac;
 
-RUN update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java && \
-    update-alternatives --set javac /usr/lib/jvm/java-8-openjdk-amd64/bin/javac
-
-# JDK 9
-# RUN set -xe && \
-#     curl -fSsL "https://github.com/AdoptOpenJDK/openjdk9-openj9-releases/releases/download/jdk-9%2B181/OpenJDK9-OPENJ9_x64_Linux_jdk-9.181.tar.gz" -o /tmp/openjdk9-openj9.tar.gz && \
-#     mkdir /usr/local/openjdk9-openj9 && \
-#     tar -xf /tmp/openjdk9-openj9.tar.gz -C /usr/local/openjdk9-openj9 --strip-components=2 && \
-#     rm /tmp/openjdk9-openj9.tar.gz
+# Open JDK 9
+RUN set -xe && \
+    curl -fSsL "https://github.com/AdoptOpenJDK/openjdk9-openj9-releases/releases/download/jdk-9.0.4%2B12_openj9-0.9.0/OpenJDK9-OPENJ9_x64_Linux_jdk-9.0.4.12_openj9-0.9.0.tar.gz" -o /tmp/openjdk9-openj9.tar.gz && \
+    mkdir /usr/local/openjdk9-openj9 && \
+    tar -xf /tmp/openjdk9-openj9.tar.gz -C /usr/local/openjdk9-openj9 --strip-components=2 && \
+    rm /tmp/openjdk9-openj9.tar.gz
 
 
 
