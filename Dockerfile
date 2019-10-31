@@ -1,25 +1,39 @@
 FROM judge0/buildpack-deps:jessie-2017-03-21
 
-
+RUN apt-get update && apt-get upgrade -y && apt-get install libmpc-dev -y 
 # see https://bugs.debian.org/775775
 # and https://github.com/docker-library/java/issues/19#issuecomment-70546872
-RUN set -xe && \
-    JAVA_8_DEBIAN_VERSION=8u131-b11-1~bpo8+1 && \
-    JAVA_7_DEBIAN_VERSION=7u151-2.6.11-1~deb8u1 && \
-    CA_CERTIFICATES_JAVA_VERSION=20161107~bpo8+1 && \
-    echo 'deb http://deb.debian.org/debian jessie-backports main' > /etc/apt/sources.list.d/jessie-backports.list && \
-    echo "deb http://security.debian.org/debian-security jessie/updates main" > /etc/apt/sources.list.d/jessie-backports.list && \
-    apt-get update && apt-get install -y \
-      openjdk-8-jdk="$JAVA_8_DEBIAN_VERSION" \
-      openjdk-7-jdk="$JAVA_7_DEBIAN_VERSION" \
-      ca-certificates-java="$CA_CERTIFICATES_JAVA_VERSION" && \
-    update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java && \
+# RUN set -xe && \
+#     JAVA_8_DEBIAN_VERSION=8u131-b11-1~bpo8+1 && \
+#     JAVA_7_DEBIAN_VERSION=7u151-2.6.11-1~deb8u1 && \
+#     CA_CERTIFICATES_JAVA_VERSION=20161107~bpo8+1 && \
+#     echo 'deb http://deb.debian.org/debian jessie-backports main' > /etc/apt/sources.list.d/jessie-backports.list && \
+#     echo "deb http://security.debian.org/debian-security jessie/updates main" > /etc/apt/sources.list.d/jessie-backports.list && \
+#     apt-get update && apt-get install -y \
+#       openjdk-8-jdk="$JAVA_8_DEBIAN_VERSION" \
+#       openjdk-7-jdk="$JAVA_7_DEBIAN_VERSION" \
+#       ca-certificates-java="$CA_CERTIFICATES_JAVA_VERSION" && \
+#     update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java && \
+#     update-alternatives --set javac /usr/lib/jvm/java-8-openjdk-amd64/bin/javac
+
+# Install OpenJDK-8
+RUN apt-get install -y openjdk-8-jdk && \
+    apt-get install -y ant && \
+    apt-get clean;
+
+# Fix certificate issues
+RUN apt-get install ca-certificates-java && \
+    apt-get clean && \
+
+RUN update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java && \
     update-alternatives --set javac /usr/lib/jvm/java-8-openjdk-amd64/bin/javac
-RUN set -xe && \
-    curl -fSsL "https://github.com/AdoptOpenJDK/openjdk9-openj9-releases/releases/download/jdk-9%2B181/OpenJDK9-OPENJ9_x64_Linux_jdk-9.181.tar.gz" -o /tmp/openjdk9-openj9.tar.gz && \
-    mkdir /usr/local/openjdk9-openj9 && \
-    tar -xf /tmp/openjdk9-openj9.tar.gz -C /usr/local/openjdk9-openj9 --strip-components=2 && \
-    rm /tmp/openjdk9-openj9.tar.gz
+
+# JDK 9
+# RUN set -xe && \
+#     curl -fSsL "https://github.com/AdoptOpenJDK/openjdk9-openj9-releases/releases/download/jdk-9%2B181/OpenJDK9-OPENJ9_x64_Linux_jdk-9.181.tar.gz" -o /tmp/openjdk9-openj9.tar.gz && \
+#     mkdir /usr/local/openjdk9-openj9 && \
+#     tar -xf /tmp/openjdk9-openj9.tar.gz -C /usr/local/openjdk9-openj9 --strip-components=2 && \
+#     rm /tmp/openjdk9-openj9.tar.gz
 
 
 
