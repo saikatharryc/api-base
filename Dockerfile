@@ -1,7 +1,6 @@
 FROM judge0/buildpack-deps:jessie-2017-03-21
 
-RUN apt-get update && apt-get upgrade -y && apt-get install software-properties-common libmpc-dev -y 
-RUN add-apt-repository ppa:openjdk-r/ppa && apt-get update
+# RUN apt-get update && apt-get upgrade -y && apt-get install software-properties-common libmpc-dev -y 
 
 # see https://bugs.debian.org/775775
 # and https://github.com/docker-library/java/issues/19#issuecomment-70546872
@@ -18,13 +17,6 @@ RUN add-apt-repository ppa:openjdk-r/ppa && apt-get update
 #     update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java && \
 #     update-alternatives --set javac /usr/lib/jvm/java-8-openjdk-amd64/bin/javac
 
-# Install OpenJDK-8
-RUN apt-get install -y openjdk-8-jdk && \
-    apt-get install -y ant && \
-    apt-get install ca-certificates-java && \
-    apt-get clean && \
-    update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java && \
-    update-alternatives --set javac /usr/lib/jvm/java-8-openjdk-amd64/bin/javac;
 
 # Open JDK 9
 RUN set -xe && \
