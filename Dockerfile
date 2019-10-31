@@ -1,7 +1,7 @@
 FROM judge0/buildpack-deps:jessie-2017-03-21
 
 RUN apt-get update && apt-get upgrade -y && apt-get install libmpc-dev -y 
-
+# GCC
 ENV GCC_VERSIONS \
        7.2.0 
 RUN set -xe && \
@@ -25,12 +25,40 @@ RUN set -xe && \
       rm -rf "$tmpdir" /tmp/gcc-$GCC_VERSION; \
     done
 
+# Node Js
+ENV NODE_VERSIONS \
+      8.5.0  
 
+ENV INSECT_VERSIONS \
+      5.0.0
 
+RUN set -xe && \
+    for NODE_VERSION in $NODE_VERSIONS; do \
+      curl -fSsL "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION.tar.gz" -o /tmp/node-$NODE_VERSION.tar.gz; \
+    done; \
+    for NODE_VERSION in $NODE_VERSIONS; do \
+      mkdir /tmp/node-$NODE_VERSION && \
+      tar -xf /tmp/node-$NODE_VERSION.tar.gz -C /tmp/node-$NODE_VERSION --strip-components=1 && \
+      rm /tmp/node-$NODE_VERSION.tar.gz && \
+      cd /tmp/node-$NODE_VERSION && \
+      ./configure \
+        --prefix=/usr/local/node-$NODE_VERSION && \
+      make -j"$(nproc)" && make install && \
+      rm -rf /tmp/node-$NODE_VERSION; \
+    done \
+    for INSECT_VERSION in $INSECT_VERSIONS; do \
+      mkdir /usr/local/insect-$INSECT_VERSION && \
+      cd /usr/local/insect-$INSECT_VERSION && \
+      npm install insect@$INSECT_VERSION && \
+      echo "#!/bin/bash\ncat \"\$1\" | /usr/local/insect-$INSECT_VERSION/node_modules/.bin/insect" > /usr/local/insect-$INSECT_VERSION/insect && \
+      chmod +x /usr/local/insect-$INSECT_VERSION/insect; \
+    done
+
+# Octave
 ENV OCTAVE_VERSIONS \
       4.2.0
 RUN set -xe && \
-    apt-get update && apt-get install -y gfortran libblas-dev liblapack-dev libpcre3-dev && \
+    apt-get install -y gfortran libblas-dev liblapack-dev libpcre3-dev && \
     for OCTAVE_VERSION in $OCTAVE_VERSIONS; do \
       curl -fSsL "https://ftp.gnu.org/gnu/octave/octave-$OCTAVE_VERSION.tar.gz" -o /tmp/octave-$OCTAVE_VERSION.tar.gz; \
     done; \
@@ -69,8 +97,7 @@ RUN set -xe && \
 
 ENV RUBY_VERSIONS \
       2.5.0 \
-      2.4.0 \
-      2.3.3 
+      2.4.0 
 RUN set -xe && \
     for RUBY_VERSION in $RUBY_VERSIONS; do \
       curl -fSsL "https://cache.ruby-lang.org/pub/ruby/ruby-$RUBY_VERSION.tar.gz" -o /tmp/ruby-$RUBY_VERSION.tar.gz; \
@@ -91,9 +118,7 @@ RUN set -xe && \
 
 ENV PYTHON_VERSIONS \
       3.6.0 \
-      3.5.3 \
-      2.7.9 \
-      2.6.9
+      2.7.9 
 RUN set -xe && \
     for PYTHON_VERSION in $PYTHON_VERSIONS; do \
       curl -fSsL "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz" -o /tmp/python-$PYTHON_VERSION.tar.xz; \
@@ -132,7 +157,7 @@ RUN set -xe && \
     rm /tmp/openjdk9-openj9.tar.gz
 
 
-
+# Pascal
 RUN set -xe && \
     curl -fSsL "ftp://ftp.freepascal.org/fpc/dist/3.0.0/x86_64-linux/fpc-3.0.0.x86_64-linux.tar" -o /tmp/fpc-3.0.0.tar && \
     mkdir /tmp/fpc-3.0.0 && \
@@ -143,12 +168,12 @@ RUN set -xe && \
     rm -rf /tmp/fpc-3.0.0
 
 
-
+# Haskell
 ENV HASKELL_VERSIONS \
       8.2.1 \
       8.0.2
 RUN set -xe && \
-    apt-get update && apt-get install -y libgmp-dev && \
+    apt-get install -y libgmp-dev && \
     for HASKELL_VERSION in $HASKELL_VERSIONS; do \
       curl -fSsL "http://downloads.haskell.org/~ghc/$HASKELL_VERSION/ghc-$HASKELL_VERSION-x86_64-deb8-linux.tar.xz" -o /tmp/ghc-$HASKELL_VERSION.tar.xz; \
     done; \
@@ -164,12 +189,12 @@ RUN set -xe && \
     done
 
 
-
+# Mono For C++
 ENV MONO_VERSIONS \
       5.4.0.167 \
       5.2.0.224
 RUN set -xe && \
-    apt-get update && apt-get install -y cmake && \
+    apt-get install -y cmake && \
     for MONO_VERSION in $MONO_VERSIONS; do \
       curl -fSsL "https://download.mono-project.com/sources/mono/mono-$MONO_VERSION.tar.bz2" -o /tmp/mono-$MONO_VERSION.tar.bz2; \
     done; \
@@ -185,31 +210,11 @@ RUN set -xe && \
     done
 
 
-
-ENV NODE_VERSIONS \
-      8.5.0  \
-      7.10.1
-RUN set -xe && \
-    for NODE_VERSION in $NODE_VERSIONS; do \
-      curl -fSsL "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION.tar.gz" -o /tmp/node-$NODE_VERSION.tar.gz; \
-    done; \
-    for NODE_VERSION in $NODE_VERSIONS; do \
-      mkdir /tmp/node-$NODE_VERSION && \
-      tar -xf /tmp/node-$NODE_VERSION.tar.gz -C /tmp/node-$NODE_VERSION --strip-components=1 && \
-      rm /tmp/node-$NODE_VERSION.tar.gz && \
-      cd /tmp/node-$NODE_VERSION && \
-      ./configure \
-        --prefix=/usr/local/node-$NODE_VERSION && \
-      make -j"$(nproc)" && make install && \
-      rm -rf /tmp/node-$NODE_VERSION; \
-    done
-
-
-
+# Closure
 ENV CLOJURE_VERSIONS \
       1.8.0
 RUN set -xe && \
-    apt-get update && apt-get install -y unzip && \
+    apt-get install -y unzip && \
     for CLOJURE_VERSION in $CLOJURE_VERSIONS; do \
       curl -fSsL "https://repo1.maven.org/maven2/org/clojure/clojure/$CLOJURE_VERSION/clojure-$CLOJURE_VERSION.zip" -o /tmp/clojure-$CLOJURE_VERSION.zip; \
     done; \
@@ -220,11 +225,11 @@ RUN set -xe && \
     done
 
 
-
+# Erlang
 ENV ERLANG_VERSIONS \
       20.0
 RUN set -xe && \
-    apt-get update && apt-get install -y unzip && \
+    apt-get install -y unzip && \
     for ERLANG_VERSION in $ERLANG_VERSIONS; do \
       curl -fSsL "https://github.com/erlang/otp/archive/OTP-$ERLANG_VERSION.tar.gz" -o /tmp/erlang-$ERLANG_VERSION.tar.gz; \
     done; \
@@ -243,11 +248,11 @@ RUN set -xe && \
 RUN ln -s /usr/local/erlang-20.0/bin/erl /usr/local/bin/erl
 
 
-
+# Elixir
 ENV ELIXIR_VERSIONS \
       1.5.1
 RUN set -xe && \
-    apt-get update && apt-get install -y unzip && \
+    apt-get install -y unzip && \
     for ELIXIR_VERSION in $ELIXIR_VERSIONS; do \
       curl -fSsL "https://github.com/elixir-lang/elixir/releases/download/v$ELIXIR_VERSION/Precompiled.zip" -o /tmp/elixir-$ELIXIR_VERSION.zip; \
     done; \
@@ -257,7 +262,7 @@ RUN set -xe && \
     done
 
 
-
+# Rust
 ENV RUST_VERSIONS \
       1.20.0
 RUN set -xe && \
@@ -276,7 +281,7 @@ RUN set -xe && \
     done
 
 
-
+# GoLang
 ENV GO_VERSIONS \
       1.9
 RUN set -xe && \
@@ -290,49 +295,35 @@ RUN set -xe && \
     done
 
 
-
-ENV INSECT_VERSIONS \
-      5.0.0
-RUN set -xe && \
-    apt-get update && apt-get install -y nodejs-legacy npm && \
-    for INSECT_VERSION in $INSECT_VERSIONS; do \
-      mkdir /usr/local/insect-$INSECT_VERSION && \
-      cd /usr/local/insect-$INSECT_VERSION && \
-      npm install insect@$INSECT_VERSION && \
-      echo "#!/bin/bash\ncat \"\$1\" | /usr/local/insect-$INSECT_VERSION/node_modules/.bin/insect" > /usr/local/insect-$INSECT_VERSION/insect && \
-      chmod +x /usr/local/insect-$INSECT_VERSION/insect; \
-    done
-
-
-
-ENV CRYSTAL_VERSIONS \
-      0.23.1-3
-RUN set -xe && \
-    for CRYSTAL_VERSION in $CRYSTAL_VERSIONS; do \
-      curl -fSsL "https://github.com/crystal-lang/crystal/releases/download/${CRYSTAL_VERSION%-*}/crystal-$CRYSTAL_VERSION-linux-x86_64.tar.gz" -o /tmp/crystal-$CRYSTAL_VERSION.tar.gz; \
-    done; \
-    for CRYSTAL_VERSION in $CRYSTAL_VERSIONS; do \
-      mkdir /usr/local/crystal-$CRYSTAL_VERSION && \
-      tar -xf /tmp/crystal-$CRYSTAL_VERSION.tar.gz -C /usr/local/crystal-$CRYSTAL_VERSION --strip-components=1 && \
-      rm /tmp/crystal-$CRYSTAL_VERSION.tar.gz; \
-    done
+# Crystal
+# ENV CRYSTAL_VERSIONS \
+#       0.23.1-3
+# RUN set -xe && \
+#     for CRYSTAL_VERSION in $CRYSTAL_VERSIONS; do \
+#       curl -fSsL "https://github.com/crystal-lang/crystal/releases/download/${CRYSTAL_VERSION%-*}/crystal-$CRYSTAL_VERSION-linux-x86_64.tar.gz" -o /tmp/crystal-$CRYSTAL_VERSION.tar.gz; \
+#     done; \
+#     for CRYSTAL_VERSION in $CRYSTAL_VERSIONS; do \
+#       mkdir /usr/local/crystal-$CRYSTAL_VERSION && \
+#       tar -xf /tmp/crystal-$CRYSTAL_VERSION.tar.gz -C /usr/local/crystal-$CRYSTAL_VERSION --strip-components=1 && \
+#       rm /tmp/crystal-$CRYSTAL_VERSION.tar.gz; \
+#     done
 
 
+# FBC
+# ENV FBC_VERSIONS \
+#       1.07.1 
+# RUN set -xe && \
+#     for FBC_VERSION in $FBC_VERSIONS; do \
+#       curl -fSsL "https://downloads.sourceforge.net/project/fbc/Binaries%20-%20Linux/FreeBASIC-$FBC_VERSION-linux-x86_64.tar.gz" -o /tmp/fbc-$FBC_VERSION.tar.gz; \
+#     done; \
+#     for FBC_VERSION in $FBC_VERSIONS; do \
+#       mkdir /usr/local/fbc-$FBC_VERSION && \
+#       tar -xf /tmp/fbc-$FBC_VERSION.tar.gz -C /usr/local/fbc-$FBC_VERSION --strip-components=1 && \
+#       rm /tmp/fbc-$FBC_VERSION.tar.gz; \
+#     done
 
-ENV FBC_VERSIONS \
-      1.05.0 
-RUN set -xe && \
-    for FBC_VERSION in $FBC_VERSIONS; do \
-      curl -fSsL "https://downloads.sourceforge.net/project/fbc/Binaries%20-%20Linux/FreeBASIC-$FBC_VERSION-linux-x86_64.tar.gz" -o /tmp/fbc-$FBC_VERSION.tar.gz; \
-    done; \
-    for FBC_VERSION in $FBC_VERSIONS; do \
-      mkdir /usr/local/fbc-$FBC_VERSION && \
-      tar -xf /tmp/fbc-$FBC_VERSION.tar.gz -C /usr/local/fbc-$FBC_VERSION --strip-components=1 && \
-      rm /tmp/fbc-$FBC_VERSION.tar.gz; \
-    done
 
-
-
+# Ocaml
 ENV OCAML_VERSIONS \
       4.05.0
 RUN set -xe && \
@@ -354,14 +345,14 @@ RUN set -xe && \
 
 
 RUN set -xe && \
-    apt-get update && apt-get install -y locales && \
+    apt-get install -y locales && \
     echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
 ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8
 
 
  
 RUN set -xe && \
-    apt-get update && apt-get install -y libcap-dev && \
+    apt-get install -y libcap-dev && \
     git clone https://github.com/ioi/isolate.git /tmp/isolate && \
     cd /tmp/isolate && \
     git checkout 18554e83793508acd1032d0cf4229a332c43085e && \
