@@ -1,7 +1,113 @@
 FROM judge0/buildpack-deps:jessie-2017-03-21
 
-# RUN apt-get update && apt-get upgrade -y && apt-get install software-properties-common libmpc-dev -y 
+RUN apt-get update && apt-get upgrade -y && apt-get install libmpc-dev -y 
 
+ENV GCC_VERSIONS \
+       7.2.0 
+RUN set -xe && \
+    for GCC_VERSION in $GCC_VERSIONS; do \
+      curl -fSsL "http://ftpmirror.gnu.org/gcc/gcc-$GCC_VERSION/gcc-$GCC_VERSION.tar.gz" -o /tmp/gcc-$GCC_VERSION.tar.gz; \
+    done; \
+    for GCC_VERSION in $GCC_VERSIONS; do \
+      mkdir /tmp/gcc-$GCC_VERSION && \
+      tar -xf /tmp/gcc-$GCC_VERSION.tar.gz -C /tmp/gcc-$GCC_VERSION --strip-components=1 && \
+      rm /tmp/gcc-$GCC_VERSION.tar.gz && \
+      cd /tmp/gcc-$GCC_VERSION && \
+      { rm *.tar.* || true; } && \
+      tmpdir="$(mktemp -d)" && \
+      cd "$tmpdir" && \
+      /tmp/gcc-$GCC_VERSION/configure \
+        --disable-multilib \
+        --enable-languages=c,c++ \
+        --prefix=/usr/local/gcc-$GCC_VERSION && \
+      make -j"$(nproc)" && \
+      make install-strip && \
+      rm -rf "$tmpdir" /tmp/gcc-$GCC_VERSION; \
+    done
+
+
+
+ENV OCTAVE_VERSIONS \
+      4.2.0
+RUN set -xe && \
+    apt-get update && apt-get install -y gfortran libblas-dev liblapack-dev libpcre3-dev && \
+    for OCTAVE_VERSION in $OCTAVE_VERSIONS; do \
+      curl -fSsL "https://ftp.gnu.org/gnu/octave/octave-$OCTAVE_VERSION.tar.gz" -o /tmp/octave-$OCTAVE_VERSION.tar.gz; \
+    done; \
+    for OCTAVE_VERSION in $OCTAVE_VERSIONS; do \
+      mkdir /tmp/octave-$OCTAVE_VERSION && \
+      tar -xf /tmp/octave-$OCTAVE_VERSION.tar.gz -C /tmp/octave-$OCTAVE_VERSION --strip-components=1 && \
+      rm /tmp/octave-$OCTAVE_VERSION.tar.gz && \
+      cd /tmp/octave-$OCTAVE_VERSION && \
+      ./configure \
+        --prefix=/usr/local/octave-$OCTAVE_VERSION && \
+      make -j"$(nproc)" && make install && \
+      rm -rf /tmp/octave-$OCTAVE_VERSION; \
+    done
+
+
+
+ENV BASH_VERSIONS \
+      4.4 \
+      4.0
+RUN set -xe && \
+    for BASH_VERSION in $BASH_VERSIONS; do \
+      curl -fSsL "http://ftpmirror.gnu.org/bash/bash-$BASH_VERSION.tar.gz" -o /tmp/bash-$BASH_VERSION.tar.gz; \
+    done; \
+    for BASH_VERSION in $BASH_VERSIONS; do \
+      mkdir /tmp/bash-$BASH_VERSION && \
+      tar -xf /tmp/bash-$BASH_VERSION.tar.gz -C /tmp/bash-$BASH_VERSION --strip-components=1 && \
+      rm /tmp/bash-$BASH_VERSION.tar.gz && \
+      cd /tmp/bash-$BASH_VERSION && \
+      ./configure \
+        --prefix=/usr/local/bash-$BASH_VERSION && \
+      make -j"$(nproc)" && make install && \
+      rm -rf /tmp/bash-$BASH_VERSION; \
+    done
+
+
+
+ENV RUBY_VERSIONS \
+      2.5.0 \
+      2.4.0 \
+      2.3.3 
+RUN set -xe && \
+    for RUBY_VERSION in $RUBY_VERSIONS; do \
+      curl -fSsL "https://cache.ruby-lang.org/pub/ruby/ruby-$RUBY_VERSION.tar.gz" -o /tmp/ruby-$RUBY_VERSION.tar.gz; \
+    done; \
+    for RUBY_VERSION in $RUBY_VERSIONS; do \
+      mkdir /tmp/ruby-$RUBY_VERSION && \
+      tar -xf /tmp/ruby-$RUBY_VERSION.tar.gz -C /tmp/ruby-$RUBY_VERSION --strip-components=1 && \
+      rm /tmp/ruby-$RUBY_VERSION.tar.gz && \
+      cd /tmp/ruby-$RUBY_VERSION && \
+      ./configure \
+        --disable-install-doc \
+        --prefix=/usr/local/ruby-$RUBY_VERSION && \
+      make -j"$(nproc)" && make install && \
+      rm -rf /tmp/ruby-$RUBY_VERSION; \
+    done
+
+
+
+ENV PYTHON_VERSIONS \
+      3.6.0 \
+      3.5.3 \
+      2.7.9 \
+      2.6.9
+RUN set -xe && \
+    for PYTHON_VERSION in $PYTHON_VERSIONS; do \
+      curl -fSsL "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz" -o /tmp/python-$PYTHON_VERSION.tar.xz; \
+    done; \
+    for PYTHON_VERSION in $PYTHON_VERSIONS; do \
+      mkdir /tmp/python-$PYTHON_VERSION && \
+      tar -xf /tmp/python-$PYTHON_VERSION.tar.xz -C /tmp/python-$PYTHON_VERSION --strip-components=1 && \
+      rm /tmp/python-$PYTHON_VERSION.tar.xz && \
+      cd /tmp/python-$PYTHON_VERSION && \
+      ./configure \
+        --prefix=/usr/local/python-$PYTHON_VERSION && \
+      make -j"$(nproc)" && make install && \
+      rm -rf /tmp/python-$PYTHON_VERSION; \
+    done
 # see https://bugs.debian.org/775775
 # and https://github.com/docker-library/java/issues/19#issuecomment-70546872
 # RUN set -xe && \
