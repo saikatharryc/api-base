@@ -1,6 +1,5 @@
 FROM judge0/buildpack-deps:jessie-2017-03-21
 
-RUN apt-get update && apt-get upgrade -y && apt-get install libmpc-dev -y
 
 # see https://bugs.debian.org/775775
 # and https://github.com/docker-library/java/issues/19#issuecomment-70546872
