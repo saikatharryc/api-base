@@ -8,6 +8,6 @@ jobs:
      - run: |
          echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password-stdin
 
-     - run: docker build -t saikatharryc/api-base:$CIRCLE_BRANCH .
+     - run: docker build -t saikatharryc/api-base:$CIRCLE_BRANCH . --network
 
      - run: docker push saikatharryc/api-base:$CIRCLE_BRANCH
