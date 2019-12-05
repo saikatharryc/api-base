@@ -1,6 +1,6 @@
 IMAGE := saikatharryc/api-base
 
-image:
+build-image:
 	docker build -t $(IMAGE) .
 
 push-image:
