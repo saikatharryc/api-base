@@ -29,10 +29,8 @@ RUN set -xe && \
 ENV NODE_VERSIONS \
       8.5.0  
 
-ENV INSECT_VERSIONS \
-      5.0.0
-
-RUN for NODE_VERSION in $NODE_VERSIONS; do \
+RUN set -xe && \
+    for NODE_VERSION in $NODE_VERSIONS; do \
       curl -fSsL "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION.tar.gz" -o /tmp/node-$NODE_VERSION.tar.gz; \
     done; \
     for NODE_VERSION in $NODE_VERSIONS; do \
@@ -45,7 +43,12 @@ RUN for NODE_VERSION in $NODE_VERSIONS; do \
       make -j"$(nproc)" && make install && \
       rm -rf /tmp/node-$NODE_VERSION; \
     done 
- RUN for INSECT_VERSION in $INSECT_VERSIONS; do \
+
+ENV INSECT_VERSIONS \
+      5.0.0
+RUN set -xe && \ 
+    apt-get update && apt-get install -y nodejs-legacy npm && \
+      for INSECT_VERSION in $INSECT_VERSIONS; do \
       mkdir /usr/local/insect-$INSECT_VERSION && \
       cd /usr/local/insect-$INSECT_VERSION && \
       npm install insect@$INSECT_VERSION && \
