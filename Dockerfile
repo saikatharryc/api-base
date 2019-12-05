@@ -78,8 +78,7 @@ RUN set -xe && \
 
 
 ENV BASH_VERSIONS \
-      4.4 \
-      4.0
+      4.4
 RUN set -xe && \
     for BASH_VERSION in $BASH_VERSIONS; do \
       curl -fSsL "http://ftpmirror.gnu.org/bash/bash-$BASH_VERSION.tar.gz" -o /tmp/bash-$BASH_VERSION.tar.gz; \
@@ -98,8 +97,8 @@ RUN set -xe && \
 
 
 ENV RUBY_VERSIONS \
-      2.5.0 \
-      2.4.0 
+      2.5.0 
+
 RUN set -xe && \
     for RUBY_VERSION in $RUBY_VERSIONS; do \
       curl -fSsL "https://cache.ruby-lang.org/pub/ruby/ruby-$RUBY_VERSION.tar.gz" -o /tmp/ruby-$RUBY_VERSION.tar.gz; \
@@ -172,8 +171,8 @@ RUN set -xe && \
 
 # Haskell
 ENV HASKELL_VERSIONS \
-      8.2.1 \
-      8.0.2
+      8.2.1 
+
 RUN set -xe && \
     apt-get install -y libgmp-dev && \
     for HASKELL_VERSION in $HASKELL_VERSIONS; do \
@@ -193,8 +192,7 @@ RUN set -xe && \
 
 # Mono For C++
 ENV MONO_VERSIONS \
-      5.4.0.167 \
-      5.2.0.224
+      5.4.0.167 
 RUN set -xe && \
     apt-get install -y cmake && \
     for MONO_VERSION in $MONO_VERSIONS; do \
